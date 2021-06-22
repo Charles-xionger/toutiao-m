@@ -10,6 +10,8 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 // 加载动态设置 Rem基准值
 import 'amfe-flexible'
+// 加载 dayjs 初始化配置
+import './utils/day'
 // 注册 Vant组件库
 Vue.use(Vant)
 Vue.config.productionTip = false
