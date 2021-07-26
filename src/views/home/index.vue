@@ -1,62 +1,117 @@
 <template>
   <div class="home-container">
     <!-- 导航栏 Nav -->
-    <van-nav-bar class="page-nav-bar" fixed>
-      <van-button class="search-btn" slot="title" type="info" size="small" round
-        icon="search">搜索
+    <van-nav-bar class="page-nav-bar"
+                 fixed>
+      <van-button class="search-btn"
+                  slot="title"
+                  type="info"
+                  size="small"
+                  round
+                  icon="search"
+                  to="/search">搜索
       </van-button>
     </van-nav-bar>
     <!-- /导航栏 Nav -->
 
     <!-- 频道列表 -->
     <!-- swipeable 滑动效果 ，默认限于内容区域 -->
-    <van-tabs class="channel-tabs" v-model="active" animated swipeable>
-      <van-tab :title="channel.name" v-for="channel in channels"
-        :key="channel.id">
+    <van-tabs class="channel-tabs"
+              v-model="active"
+              animated
+              swipeable>
+      <van-tab :title="channel.name"
+               v-for="channel in channels"
+               :key="channel.id">
         <!-- 文章列表 -->
         <article-list :channel="channel"></article-list>
         <!-- /文章列表 -->
 
       </van-tab>
-      <div slot="nav-right" class="placeholder"></div>
-      <div slot="nav-right" class="hamburger-btn">
+      <div slot="nav-right"
+           class="placeholder"></div>
+      <div slot="nav-right"
+           class="hamburger-btn"
+           @click="isChannelEditShow = true">
         <i class="iconfont icon-gengduo"></i>
       </div>
     </van-tabs>
+
     <!-- /频道列表 -->
+    <van-popup v-model="isChannelEditShow"
+               closeable
+               position="bottom"
+               close-icon-position="top-left"
+               :style="{ height: '100%' }">
+      <channel-edit :myChannels="channels"
+                    :active="active"
+                    @update-active="onUpdateActive" />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list.vue'
+import ChannelEdit from './components/channel-edit.vue'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
+
 export default {
   name: 'HomeIndex',
   components: {
-    ArticleList
+    ArticleList,
+    ChannelEdit
   },
   props: {},
-  data() {
+  data () {
     return {
       active: 0,
-      channels: [] // 频道列表
+      channels: [], // 频道列表
+      isChannelEditShow: false // 控制编辑频道弹出层的显示状态
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(['user'])
+  },
   watch: {},
-  created() {
+  created () {
     this.loadChannels()
   },
-  mounted() { },
+  mounted () { },
   methods: {
-    async loadChannels() {
+    async loadChannels () {
       try {
-        const { data: res } = await getUserChannels()
-        console.log(res)
-        this.channels = res.data.channels
+        let channels = []
+
+        if (this.user) {
+          // 已登录，请求获取用户频道列表
+          const { data: res } = await getUserChannels()
+          channels = res.data.channels
+        } else {
+          // 未登录，判断是否有本地的频道列表
+          const localChannels = getItem('TOUTIAO_CHANNELS')
+          if (localChannels) {
+            // 有，拿来用
+            channels = localChannels
+          } else {
+            // 没有，请求获取默认频道列表
+            const { data: res } = await getUserChannels()
+            channels = res.data.channels
+          }
+        }
+        this.channels = channels
       } catch (error) {
         this.$toast('获取用户频道失败')
       }
+    },
+
+    onUpdateActive (index, isChannelEditShow = true) {
+      // 更新激活的频道
+      this.active = index
+
+      // 关闭编辑频道弹层
+      this.isChannelEditShow = isChannelEditShow
     }
   }
 }
