@@ -25,14 +25,17 @@ module.exports = {
       //  postcss-pxtorem 处理每个css 文件的时候来调用函数
       //  它会把处理的css文件相关的信息，通过参数传递给该函数
 
-      rootValue({ file }) {
+      rootValue ({ file }) {
         // console.log('处理的css文件：', file)
         return file.indexOf('vant') !== -1 ? 37.5 : 75
       },
       // rootValue: 37.5,
       // 配置要转换的css属性
       // * 表示所有
-      propList: ['*']
+      propList: ['*'],
+
+      // 配置不要转换的样式资源
+      exclude: 'github-markdown.css'
     }
   }
 }
