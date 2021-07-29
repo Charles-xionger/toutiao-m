@@ -17,6 +17,9 @@ const routes = [
       {
         path: '', // 默认子路由
         name: 'home',
+        meta: {
+          keepAlive: true // 需要缓存
+        },
         component: () => import('@/views/home')
       },
       {

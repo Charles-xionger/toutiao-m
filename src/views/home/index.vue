@@ -1,51 +1,67 @@
 <template>
   <div class="home-container">
     <!-- 导航栏 Nav -->
-    <van-nav-bar class="page-nav-bar"
-                 fixed>
-      <van-button class="search-btn"
-                  slot="title"
-                  type="info"
-                  size="small"
-                  round
-                  icon="search"
-                  to="/search">搜索
+    <van-nav-bar
+      class="page-nav-bar"
+      fixed
+    >
+      <van-button
+        class="search-btn"
+        slot="title"
+        type="info"
+        size="small"
+        round
+        icon="search"
+        to="/search"
+      >搜索
       </van-button>
     </van-nav-bar>
     <!-- /导航栏 Nav -->
 
     <!-- 频道列表 -->
     <!-- swipeable 滑动效果 ，默认限于内容区域 -->
-    <van-tabs class="channel-tabs"
-              v-model="active"
-              animated
-              swipeable>
-      <van-tab :title="channel.name"
-               v-for="channel in channels"
-               :key="channel.id">
+    <van-tabs
+      class="channel-tabs"
+      v-model="active"
+      animated
+      swipeable
+    >
+      <van-tab
+        :title="channel.name"
+        v-for="channel in channels"
+        :key="channel.id"
+      >
         <!-- 文章列表 -->
         <article-list :channel="channel"></article-list>
         <!-- /文章列表 -->
 
       </van-tab>
-      <div slot="nav-right"
-           class="placeholder"></div>
-      <div slot="nav-right"
-           class="hamburger-btn"
-           @click="isChannelEditShow = true">
+      <div
+        slot="nav-right"
+        class="placeholder"
+      ></div>
+      <div
+        slot="nav-right"
+        class="hamburger-btn"
+        @click="isChannelEditShow = true"
+      >
         <i class="iconfont icon-gengduo"></i>
       </div>
     </van-tabs>
 
     <!-- /频道列表 -->
-    <van-popup v-model="isChannelEditShow"
-               closeable
-               position="bottom"
-               close-icon-position="top-left"
-               :style="{ height: '100%' }">
-      <channel-edit :myChannels="channels"
-                    :active="active"
-                    @update-active="onUpdateActive" />
+    <van-popup
+      v-model="isChannelEditShow"
+      closeable
+      position="bottom"
+      close-icon-position="top-left"
+      :style="{ height: '100%' }"
+    >
+      <channel-edit
+        :myChannels="channels"
+        :active="active"
+        @update-active="onUpdateActive"
+      />
     </van-popup>
   </div>
 </template>
@@ -113,6 +129,18 @@ export default {
       // 关闭编辑频道弹层
       this.isChannelEditShow = isChannelEditShow
     }
+  },
+  // 在页面离开时记录滚动位置
+  beforeRouteLeave (to, from, next) {
+    this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+    next()
+  },
+
+  // 进入该页面时，用之前保存的滚动位置赋值
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      document.body.scrollTop = vm.scrollTop
+    })
   }
 }
 </script>
