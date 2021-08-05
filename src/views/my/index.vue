@@ -1,14 +1,28 @@
 <template>
   <div class="my-container">
     <!-- 已登录头部 -->
-    <div v-if="user" class="header user-info">
+    <div
+      v-if="user"
+      class="header user-info"
+    >
       <div class="base-info">
         <div class="left">
-          <van-image round fit="cover" class="avatar" :src="userInfo.photo" />
+          <van-image
+            round
+            fit="cover"
+            class="avatar"
+            :src="userInfo.photo"
+          />
           <span class="text">{{userInfo.name}}</span>
         </div>
         <div class="right">
-          <van-button class="edit-btn" round type="default" size="mini">编辑资料
+          <van-button
+            class="edit-btn"
+            round
+            type="default"
+            size="mini"
+            to="/user/profile"
+          >编辑资料
           </van-button>
         </div>
       </div>
@@ -34,31 +48,69 @@
     <!-- /已登录头部 -->
 
     <!-- 未登录头部 -->
-    <div v-else class="header not-login">
-      <div class="login-btn" @click="$router.push('/login')">
-        <img class="mobile-img" src="~@/assets/mobile.png" alt="">
+    <div
+      v-else
+      class="header not-login"
+    >
+      <div
+        class="login-btn"
+        @click="$router.push('/login')"
+      >
+        <img
+          class="mobile-img"
+          src="~@/assets/mobile.png"
+          alt=""
+        >
         <span class="text">登录注册</span>
       </div>
     </div>
     <!-- /未登录头部 -->
 
     <!-- 导航 -->
-    <van-grid class="grid-nav mb-9" :column-num="2" clickable>
+    <van-grid
+      class="grid-nav mb-9"
+      :column-num="2"
+      clickable
+    >
       <van-grid-item class="grid-item">
-        <i slot="icon" class="iconfont icon-shoucang"></i>
-        <span slot="text" class="text">收藏</span>
+        <i
+          slot="icon"
+          class="iconfont icon-shoucang"
+        ></i>
+        <span
+          slot="text"
+          class="text"
+        >收藏</span>
       </van-grid-item>
       <van-grid-item class="grid-item">
-        <i slot="icon" class="iconfont icon-lishi"></i>
-        <span slot="text" class="text">历史</span>
+        <i
+          slot="icon"
+          class="iconfont icon-lishi"
+        ></i>
+        <span
+          slot="text"
+          class="text"
+        >历史</span>
       </van-grid-item>
     </van-grid>
     <!-- /导航 -->
 
-    <van-cell title="消息通知" is-link />
-    <van-cell class="mb-9" title="小智同学" is-link />
-    <van-cell v-if="user" class="logout-cell" clickable title="退出登录"
-      @click="onLogout" />
+    <van-cell
+      title="消息通知"
+      is-link
+    />
+    <van-cell
+      class="mb-9"
+      title="小智同学"
+      is-link
+    />
+    <van-cell
+      v-if="user"
+      class="logout-cell"
+      clickable
+      title="退出登录"
+      @click="onLogout"
+    />
 
   </div>
 </template>
@@ -71,7 +123,7 @@ export default {
   name: 'MyIndex',
   components: {},
   props: {},
-  data() {
+  data () {
     return {
       userInfo: {} // 用户信息
     }
@@ -80,15 +132,15 @@ export default {
     ...mapState(['user'])
   },
   watch: {},
-  created() {
+  created () {
     // 如果登录成功，获取数据
     if (this.user) {
       this.loadUserInfo()
     }
   },
-  mounted() { },
+  mounted () { },
   methods: {
-    onLogout() {
+    onLogout () {
       // 退出提示
       // 在组件中，需要使用this.$dialog
       this.$dialog.confirm({
@@ -106,7 +158,7 @@ export default {
         })
     },
 
-    async loadUserInfo() {
+    async loadUserInfo () {
       try {
         const { data: res } = await getUserInfo()
         console.log(res)
