@@ -17,7 +17,8 @@ import JSONBig from 'json-bigint'
 // JSONBig.stringify() 把 JavaScript 对象转为 JSON 格式字符串
 
 const request = axios.create({
-  baseURL: 'http://ttapi.research.itcast.cn/', // 接口的基础路径
+  baseURL: 'http://toutiao.itheima.net/', // 接口的基础路径
+  // baseURL: 'http://toutiao-app.itheima.net/', // 接口的基础路径
 
   // 自定义后端返回的原始数据
   // data :后端返回的原始数据， JSON格式的字符串
